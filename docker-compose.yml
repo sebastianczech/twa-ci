@@ -18,6 +18,7 @@ services:
       - SONAR_PORT=9000
       - SONAR_DB_PORT=5432
   sonardb:
+    platform: linux/x86_64
     image: postgres:9.6
     restart: always
     ports:
