@@ -31,3 +31,4 @@ target/
 # IntelliJ Idea Files
 .idea
 *.iml
+sonar

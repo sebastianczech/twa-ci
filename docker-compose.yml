@@ -29,7 +29,7 @@ services:
     volumes:
       - ./sonar/db:/var/lib/postgresql/data
   sonar:
-    image: sonarqube:8.9-community
+    image: sonarqube-arm:latest
     restart: always
     ports:
       - "19000:9000"
