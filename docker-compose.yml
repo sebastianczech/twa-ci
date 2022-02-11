@@ -5,7 +5,8 @@ volumes:
 
 services:
   dtrack-apiserver:
-    image: dependencytrack/apiserver
+    platform: linux/arm64
+    image: dependencytrack/apiserver:snapshot
     ports:
       - '18081:8080'
     volumes:
