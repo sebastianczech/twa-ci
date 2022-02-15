@@ -2,6 +2,7 @@ version: '3'
 volumes:
   jenkins-data:
   dependency-track:
+  pact-db-volume:
 
 services:
   dtrack-apiserver:
@@ -35,6 +36,34 @@ services:
     environment:
       - SONAR_PORT=9000
       - SONAR_DB_PORT=5432
+  pact-db:
+    platform: linux/x86_64
+    image: postgres
+    healthcheck:
+      test: psql postgres --command "select 1" -U postgres
+    volumes:
+      - pact-db-volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres  
+  pact-broker:
+    image: pactfoundation/pact-broker
+    restart: always
+    ports:
+      - "19292:9292"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - jenkins-data:/var/lib/jenkins/
+    depends_on:
+      - pact-db
+    environment:
+      - PACT_BROKER_DATABASE_USERNAME=postgres
+      - PACT_BROKER_DATABASE_PASSWORD=password
+      - PACT_BROKER_DATABASE_HOST=pact-db
+      - PACT_BROKER_DATABASE_NAME=postgres
+      - PACT_BROKER_WEBHOOK_SCHEME_WHITELIST=http https
   sonardb:
     platform: linux/x86_64
     image: postgres:9.6
